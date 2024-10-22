@@ -2,7 +2,7 @@
 
 # @name RecadosController
 ### findAll
-GET {{baseURL}}/recados HTTP/1.1
+GET {{baseURL}}/recados/?limit=20&offset=5 HTTP/1.1
 Content-Type: application/json
 
 ### findOne
