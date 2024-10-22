@@ -6,7 +6,7 @@ GET {{baseURL}}/recados/?limit=20&offset=5 HTTP/1.1
 Content-Type: application/json
 
 ### findOne
-GET {{baseURL}}/recados/1 HTTP/1.1
+GET {{baseURL}}/recados/2 HTTP/1.1
 Content-Type: application/json
 
 ### create
@@ -14,15 +14,19 @@ POST  {{baseURL}}/recados HTTP/1.1
 Content-Type: application/json
 
 {
-  "recado": "novo recado"
+    "texto": "Este é um novo recado",
+    "de": "João",
+    "para": "Maria",
+    "lido": false,
+    "data": "2024-10-22T17:49:05.258Z"
 }
 ### update
 PATCH   {{baseURL}}/recados/1 HTTP/1.1
 Content-Type: application/json
 
 {
-  "recado": "novo recado atualizado"
+  "texto": "Recado atualizado"
 }
 ### delete
-DELETE {{baseURL}}/recados/1 HTTP/1.1
+DELETE {{baseURL}}/recados/2 HTTP/1.1
 Content-Type: application/json

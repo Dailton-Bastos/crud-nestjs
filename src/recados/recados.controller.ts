@@ -10,6 +10,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { RecadosService } from './recados.service';
+import { RecadoEntity } from './entities/recado.entity';
 
 /* 
   CRUD
@@ -25,36 +27,32 @@ import {
 
 @Controller('recados')
 export class RecadosController {
+  constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll(@Query() pagination: any): string {
-    const { limit = 10, offset = 0 } = pagination;
-    return `Retorna todos os recados. Limit=${limit}, Offset=${offset}`;
+  findAll(@Query() pagination: any): RecadoEntity[] {
+    return this.recadosService.findAll();
   }
 
   // Encontra um recado por id
   @Get(':id')
-  findOne(@Param('id') id: string): string {
-    console.log(id);
-    return `Essa rota retorna o recado ID ${id}`;
+  findOne(@Param('id') id: string): RecadoEntity {
+    return this.recadosService.findOne(id);
   }
 
   @Post()
-  create(@Body() body: any) {
-    return body;
+  create(@Body() body: any): RecadoEntity {
+    return this.recadosService.create(body);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return {
-      id,
-      ...body,
-    };
+  update(@Param('id') id: string, @Body() body: any): void {
+    return this.recadosService.update(id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `Essa rota APAGAR um recado ID ${id}`;
+  remove(@Param('id') id: string): void {
+    return this.recadosService.remove(id);
   }
 }
