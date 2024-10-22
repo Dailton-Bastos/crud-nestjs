@@ -37,7 +37,7 @@ export class RecadosController {
 
   // Encontra um recado por id
   @Get(':id')
-  findOne(@Param('id') id: string): RecadoEntity {
+  findOne(@Param('id') id: string): RecadoEntity | void {
     return this.recadosService.findOne(id);
   }
 
@@ -47,12 +47,12 @@ export class RecadosController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any): void {
+  update(@Param('id') id: string, @Body() body: any): RecadoEntity | void {
     return this.recadosService.update(id, body);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): void {
+  remove(@Param('id') id: string): RecadoEntity | void {
     return this.recadosService.remove(id);
   }
 }
