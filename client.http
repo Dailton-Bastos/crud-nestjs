@@ -25,7 +25,8 @@ PATCH   {{baseURL}}/recados/1 HTTP/1.1
 Content-Type: application/json
 
 {
-  "texto": "Recado atualizado"
+  "texto": "Recado",
+  "lido": true
 }
 ### delete
 DELETE {{baseURL}}/recados/2 HTTP/1.1
