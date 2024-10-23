@@ -9,7 +9,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { RecadoEntity } from './entities/recado.entity';
@@ -36,13 +35,13 @@ export class RecadosController {
   // Encontrar todos os recados
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll(@Query() pagination: any): RecadoEntity[] {
+  findAll(): Promise<RecadoEntity[]> {
     return this.recadosService.findAll();
   }
 
   // Encontra um recado por id
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): RecadoEntity | void {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<RecadoEntity | void> {
     return this.recadosService.findOne(id);
   }
 
