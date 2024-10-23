@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { RecadoEntity } from './entities/recado.entity';
+import { CreateRecadoDto } from './dto/create-recado.dto';
+import { UpdateRecadoDto } from './dto/update-recado.dto';
 
 /* 
   CRUD
@@ -24,6 +26,8 @@ import { RecadoEntity } from './entities/recado.entity';
   PATCH é utilizado para atualizar dados de um recurso
   PUT é utilizado para atualizar um recurso inteiro
 */
+
+// DTO - Data Transfer Object -> Objeto de transferência de dados
 
 @Controller('recados')
 export class RecadosController {
@@ -42,13 +46,16 @@ export class RecadosController {
   }
 
   @Post()
-  create(@Body() body: any): RecadoEntity {
-    return this.recadosService.create(body);
+  create(@Body() createRecadoDto: CreateRecadoDto): RecadoEntity {
+    return this.recadosService.create(createRecadoDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any): RecadoEntity | void {
-    return this.recadosService.update(id, body);
+  update(
+    @Param('id') id: string,
+    @Body() updateRecadoDto: UpdateRecadoDto,
+  ): RecadoEntity | void {
+    return this.recadosService.update(id, updateRecadoDto);
   }
 
   @Delete(':id')
