@@ -16,9 +16,7 @@ Content-Type: application/json
 {
     "texto": "Este é um novo recado",
     "de": "João",
-    "para": "Maria",
-    "lido": false,
-    "data": "2024-10-22T17:49:05.258Z"
+    "para": "Maria"
 }
 ### update
 PATCH   {{baseURL}}/recados/1 HTTP/1.1
@@ -26,7 +24,7 @@ Content-Type: application/json
 
 {
   "texto": "Recado",
-  "lido": true
+  "lido": false
 }
 ### delete
 DELETE {{baseURL}}/recados/2 HTTP/1.1
