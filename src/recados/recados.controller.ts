@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -41,7 +42,7 @@ export class RecadosController {
 
   // Encontra um recado por id
   @Get(':id')
-  findOne(@Param('id') id: string): RecadoEntity | void {
+  findOne(@Param('id', ParseIntPipe) id: number): RecadoEntity | void {
     return this.recadosService.findOne(id);
   }
 
@@ -59,7 +60,7 @@ export class RecadosController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): RecadoEntity | void {
+  remove(@Param('id', ParseIntPipe) id: number): RecadoEntity | void {
     return this.recadosService.remove(id);
   }
 }
