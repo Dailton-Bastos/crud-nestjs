@@ -12,8 +12,7 @@ export class PessoaEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  @IsEmail()
+  @Column({ unique: true })
   email: string;
 
   @Column({ length: 255 })
