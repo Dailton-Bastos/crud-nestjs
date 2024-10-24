@@ -52,9 +52,9 @@ export class RecadosController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateRecadoDto: UpdateRecadoDto,
-  ): RecadoEntity | void {
+  ): Promise<RecadoEntity | void> {
     return this.recadosService.update(id, updateRecadoDto);
   }
 
