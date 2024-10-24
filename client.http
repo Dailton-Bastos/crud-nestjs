@@ -35,7 +35,7 @@ GET {{baseURL}}/pessoas/ HTTP/1.1
 Content-Type: application/json
 
 ### findOne
-GET {{baseURL}}/pessoas/1 HTTP/1.1
+GET {{baseURL}}/pessoas/11 HTTP/1.1
 Content-Type: application/json
 
 ### create
@@ -43,9 +43,18 @@ POST  {{baseURL}}/pessoas HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "email1@email.com",
+  "email": "email@email.com",
   "nome": "Maria",
   "password": "123456"
+}
+
+### update
+PATCH   {{baseURL}}/pessoas/11 HTTP/1.1
+Content-Type: application/json
+
+{
+  "nome": "Maria Silva",
+  "password": "maria123"
 }
 
 ### delete

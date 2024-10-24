@@ -44,12 +44,33 @@ export class PessoasService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pessoa`;
+  async findOne(id: number): Promise<PessoaEntity> {
+    const pessoa = await this.pessoaRepository.findOne({ where: { id } });
+
+    if (pessoa) return pessoa;
+
+    throw new NotFoundException('Pessoa não encontrada');
   }
 
-  update(id: number, updatePessoaDto: UpdatePessoaDto) {
-    return `This action updates a #${id} pessoa`;
+  async update(
+    id: number,
+    updatePessoaDto: UpdatePessoaDto,
+  ): Promise<PessoaEntity> {
+    const partialUpdatePessoaDto = {
+      passwordHash: updatePessoaDto.password,
+      nome: updatePessoaDto.nome,
+    };
+
+    const pessoa = await this.pessoaRepository.preload({
+      id,
+      ...partialUpdatePessoaDto,
+    });
+
+    if (!pessoa) {
+      throw new NotFoundException('Pessoa não encontrada');
+    }
+
+    return this.pessoaRepository.save(pessoa);
   }
 
   async remove(id: number): Promise<void> {
