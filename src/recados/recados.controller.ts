@@ -46,7 +46,7 @@ export class RecadosController {
   }
 
   @Post()
-  create(@Body() createRecadoDto: CreateRecadoDto): RecadoEntity {
+  create(@Body() createRecadoDto: CreateRecadoDto): Promise<RecadoEntity> {
     return this.recadosService.create(createRecadoDto);
   }
 
@@ -59,7 +59,7 @@ export class RecadosController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): RecadoEntity | void {
+  remove(@Param('id', ParseIntPipe) id: number): Promise<RecadoEntity | void> {
     return this.recadosService.remove(id);
   }
 }
