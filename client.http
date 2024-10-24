@@ -47,3 +47,7 @@ Content-Type: application/json
   "nome": "Maria",
   "password": "123456"
 }
+
+### delete
+DELETE {{baseURL}}/pessoas/10 HTTP/1.1
+Content-Type: application/json
