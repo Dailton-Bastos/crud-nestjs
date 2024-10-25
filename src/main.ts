@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module'; // Módulo raiz
 import { ValidationPipe } from '@nestjs/common';
+import { ParseIntIdPipe } from './common/pipes/parse-int-id.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // levantar erro quando a chave não existir
       transform: false, // tenta transformar os tipos de dados de params e dtos
     }),
+    new ParseIntIdPipe(),
   );
 
   await app.listen(process.env.PORT ?? 3000);

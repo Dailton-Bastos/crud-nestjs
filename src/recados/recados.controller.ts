@@ -6,16 +6,17 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+// import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 
 /* 
   CRUD
@@ -32,6 +33,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 // DTO - Data Transfer Object -> Objeto de transferência de dados
 
 @Controller('recados')
+// @UsePipes(ParseIntIdPipe)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
@@ -43,7 +45,7 @@ export class RecadosController {
 
   // Encontra um recado por id
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<RecadoEntity | void> {
+  findOne(@Param('id') id: number): Promise<RecadoEntity | void> {
     return this.recadosService.findOne(id);
   }
 
@@ -54,14 +56,14 @@ export class RecadosController {
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: number,
     @Body() updateRecadoDto: UpdateRecadoDto,
   ): Promise<RecadoEntity | void> {
     return this.recadosService.update(id, updateRecadoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<RecadoEntity | void> {
+  remove(@Param('id') id: number): Promise<RecadoEntity | void> {
     return this.recadosService.remove(id);
   }
 }
