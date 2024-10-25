@@ -9,11 +9,13 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 /* 
   CRUD
@@ -35,8 +37,8 @@ export class RecadosController {
   // Encontrar todos os recados
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll(): Promise<RecadoEntity[]> {
-    return this.recadosService.findAll();
+  findAll(@Query() paginationDto: PaginationDto): Promise<RecadoEntity[]> {
+    return this.recadosService.findAll(paginationDto);
   }
 
   // Encontra um recado por id

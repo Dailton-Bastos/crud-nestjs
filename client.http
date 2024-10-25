@@ -2,7 +2,7 @@
 
 # @name RecadosController
 ### findAll
-GET {{baseURL}}/recados/?limit=20&offset=5 HTTP/1.1
+GET {{baseURL}}/recados/?limit=5&offset=2 HTTP/1.1
 Content-Type: application/json
 
 ### findOne
@@ -14,9 +14,9 @@ POST  {{baseURL}}/recados HTTP/1.1
 Content-Type: application/json
 
 {
-    "texto": "Recado 3",
+    "texto": "Recado",
     "deId": 13,
-    "paraId": 11
+    "paraId": 15
 }
 ### update
 PATCH   {{baseURL}}/recados/5 HTTP/1.1
@@ -43,8 +43,8 @@ POST  {{baseURL}}/pessoas HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "email@email.com",
-  "nome": "Maria",
+  "email": "email1@email.com",
+  "nome": "Maria Jose",
   "password": "123456"
 }
 
