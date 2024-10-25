@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
@@ -16,6 +17,7 @@ import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 // import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 
 /* 
@@ -34,11 +36,13 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('recados')
 // @UsePipes(ParseIntIdPipe)
+@UseInterceptors(AddHeaderInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
   @HttpCode(HttpStatus.OK)
   @Get()
+  // @UseInterceptors(AddHeaderInterceptor)
   findAll(@Query() paginationDto: PaginationDto): Promise<RecadoEntity[]> {
     return this.recadosService.findAll(paginationDto);
   }
