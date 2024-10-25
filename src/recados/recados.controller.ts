@@ -46,7 +46,7 @@ export class RecadosController {
   }
 
   @Post()
-  create(@Body() createRecadoDto: CreateRecadoDto): Promise<RecadoEntity> {
+  create(@Body() createRecadoDto: CreateRecadoDto) {
     return this.recadosService.create(createRecadoDto);
   }
 

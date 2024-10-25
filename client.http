@@ -6,7 +6,7 @@ GET {{baseURL}}/recados/?limit=20&offset=5 HTTP/1.1
 Content-Type: application/json
 
 ### findOne
-GET {{baseURL}}/recados/1 HTTP/1.1
+GET {{baseURL}}/recados/7 HTTP/1.1
 Content-Type: application/json
 
 ### create
@@ -15,8 +15,8 @@ Content-Type: application/json
 
 {
     "texto": "Recado 3",
-    "de": "João",
-    "para": "Maria"
+    "deId": 13,
+    "paraId": 11
 }
 ### update
 PATCH   {{baseURL}}/recados/2 HTTP/1.1
