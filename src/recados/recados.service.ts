@@ -95,17 +95,12 @@ export class RecadosService {
   }
 
   async update(id: number, updateRecadoDto: UpdateRecadoDto) {
-    const partialUpdateRecadoDto = {
-      lido: updateRecadoDto?.lido,
-      texto: updateRecadoDto?.texto,
-    };
+    const recado = await this.findOne(id);
 
-    const recado = await this.recadoRepository.preload({
-      id,
-      ...partialUpdateRecadoDto,
-    });
+    if (!recado) return;
 
-    if (!recado) return this.throwNotFoundError();
+    recado.texto = updateRecadoDto?.texto ?? recado.texto;
+    recado.lido = updateRecadoDto?.lido ?? recado.lido;
 
     await this.recadoRepository.save(recado);
 
