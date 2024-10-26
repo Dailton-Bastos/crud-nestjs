@@ -20,6 +20,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
+import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.interceptor';
 // import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 
 /* 
@@ -38,7 +39,7 @@ import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling
 
 @Controller('recados')
 // @UsePipes(ParseIntIdPipe)
-@UseInterceptors(AddHeaderInterceptor)
+@UseInterceptors(AddHeaderInterceptor, SimpleCacheInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
