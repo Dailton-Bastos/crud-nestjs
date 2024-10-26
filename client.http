@@ -3,6 +3,7 @@
 # @name RecadosController
 ### findAll
 GET {{baseURL}}/recados/?limit=10&offset=2 HTTP/1.1
+Authorization: Bearer 123456
 Content-Type: application/json
 
 ### findOne
