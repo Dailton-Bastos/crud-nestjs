@@ -9,18 +9,13 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
-  UsePipes,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
-import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
-import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
-import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.interceptor';
+// import { ChangeDataInterceptor } from 'src/common/interceptors/change-data.interceptor';
 // import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 
 /* 
@@ -39,21 +34,20 @@ import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.int
 
 @Controller('recados')
 // @UsePipes(ParseIntIdPipe)
-@UseInterceptors(AddHeaderInterceptor, SimpleCacheInterceptor)
+// @UseInterceptors(ChangeDataInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
   @HttpCode(HttpStatus.OK)
   @Get()
   // @UseInterceptors(AddHeaderInterceptor)
-  @UseInterceptors(TimingConnectionInterceptor, ErrorHandlingInterceptor)
+  // @UseInterceptors(TimingConnectionInterceptor, ErrorHandlingInterceptor)
   findAll(@Query() paginationDto: PaginationDto): Promise<RecadoEntity[]> {
     return this.recadosService.findAll(paginationDto);
   }
 
   // Encontra um recado por id
   @Get(':id')
-  @UseInterceptors(ErrorHandlingInterceptor)
   findOne(@Param('id') id: number): Promise<RecadoEntity | void> {
     return this.recadosService.findOne(id);
   }
