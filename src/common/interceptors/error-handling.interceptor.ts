@@ -2,10 +2,12 @@ import {
   BadRequestException,
   CallHandler,
   ExecutionContext,
+  Injectable,
   NestInterceptor,
 } from '@nestjs/common';
 import { catchError, Observable, throwError } from 'rxjs';
 
+@Injectable()
 export class ErrorHandlingInterceptor implements NestInterceptor {
   async intercept(
     _context: ExecutionContext,
