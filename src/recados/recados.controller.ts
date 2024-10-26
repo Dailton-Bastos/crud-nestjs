@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -50,8 +51,9 @@ export class RecadosController {
     @Query() paginationDto: PaginationDto,
     @Req() req: Request,
   ): Promise<RecadoEntity[]> {
-    console.log('RecadosController', req['user']);
-    return this.recadosService.findAll(paginationDto);
+    // throw new Error('ErrorExceptionFilter');
+    throw new BadRequestException('Erro');
+    // return this.recadosService.findAll(paginationDto);
   }
 
   // Encontra um recado por id
