@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,6 +10,7 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
@@ -20,6 +20,7 @@ import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthTokenInterceptor } from 'src/common/interceptors/auth-token.interceptor';
 import { Request } from 'express';
+import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 // import { ChangeDataInterceptor } from 'src/common/interceptors/change-data.interceptor';
 // import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 
@@ -40,6 +41,7 @@ import { Request } from 'express';
 @Controller('recados')
 // @UsePipes(ParseIntIdPipe)
 @UseInterceptors(AuthTokenInterceptor)
+@UseGuards(IsAdminGuard)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
@@ -52,8 +54,8 @@ export class RecadosController {
     @Req() req: Request,
   ): Promise<RecadoEntity[]> {
     // throw new Error('ErrorExceptionFilter');
-    throw new BadRequestException('Erro');
-    // return this.recadosService.findAll(paginationDto);
+    // throw new BadRequestException('Erro');
+    return this.recadosService.findAll(paginationDto);
   }
 
   // Encontra um recado por id

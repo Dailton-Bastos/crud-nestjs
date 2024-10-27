@@ -10,10 +10,9 @@ import { RecadosModule } from 'src/recados/recados.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { SimpleMiddleware } from 'src/common/middlewares/simple.middleware';
-import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
 import { APP_FILTER } from '@nestjs/core';
-import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { ErrorExceptionFilter } from 'src/common/filters/error-exception.filter';
+// import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 
 @Module({
   imports: [
@@ -42,6 +41,10 @@ import { ErrorExceptionFilter } from 'src/common/filters/error-exception.filter'
       provide: APP_FILTER,
       useClass: ErrorExceptionFilter,
     },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: IsAdminGuard,
+    // },
   ],
 })
 export class AppModule implements NestModule {
@@ -50,9 +53,9 @@ export class AppModule implements NestModule {
       path: '*',
       method: RequestMethod.ALL,
     });
-    consumer.apply(OutroMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
+    // consumer.apply(OutroMiddleware).forRoutes({
+    //   path: '*',
+    //   method: RequestMethod.ALL,
+    // });
   }
 }
