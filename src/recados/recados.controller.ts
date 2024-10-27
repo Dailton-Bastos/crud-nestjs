@@ -13,6 +13,7 @@ import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+// import { UrlParam } from 'src/common/params/url-param.decorator';
 
 /* 
   CRUD
@@ -33,7 +34,10 @@ export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
   @Get()
-  findAll(@Query() paginationDto: PaginationDto): Promise<RecadoEntity[]> {
+  findAll(
+    @Query() paginationDto: PaginationDto,
+    // @UrlParam() url: string,
+  ): Promise<RecadoEntity[]> {
     return this.recadosService.findAll(paginationDto);
   }
 
