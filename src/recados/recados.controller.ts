@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -13,6 +14,7 @@ import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { SERVER_NAME } from 'src/common/constants/server-name.constant';
 // import { UrlParam } from 'src/common/params/url-param.decorator';
 
 /* 
@@ -31,13 +33,18 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('recados')
 export class RecadosController {
-  constructor(private readonly recadosService: RecadosService) {}
+  constructor(
+    private readonly recadosService: RecadosService,
+    @Inject(SERVER_NAME) // Token em provider
+    private readonly serverName: string,
+  ) {}
   // Encontrar todos os recados
   @Get()
   findAll(
     @Query() paginationDto: PaginationDto,
     // @UrlParam() url: string,
   ): Promise<RecadoEntity[]> {
+    console.log(this.serverName);
     return this.recadosService.findAll(paginationDto);
   }
 
