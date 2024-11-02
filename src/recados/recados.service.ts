@@ -24,7 +24,7 @@ export class RecadosService {
   findAll(paginationDto?: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
 
-    console.log(this.recadosUtils.inverteString('Bastos'));
+    // console.log(this.recadosUtils.inverteString('Bastos'));
 
     return this.recadoRepository.find({
       take: limit, // quantos registros serão exibidos (por página)

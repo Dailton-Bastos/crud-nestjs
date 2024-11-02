@@ -2,12 +2,12 @@
 
 # @name RecadosController
 ### findAll
-GET {{baseURL}}/recados/?limit=10&offset=2 HTTP/1.1
+GET {{baseURL}}/recados HTTP/1.1
 Authorization: Bearer 123456
 Content-Type: application/json
 
 ### findOne
-GET {{baseURL}}/recados/17 HTTP/1.1
+GET {{baseURL}}/recados/1 HTTP/1.1
 Content-Type: application/json
 
 ### create
@@ -16,8 +16,8 @@ Content-Type: application/json
 
 {
     "texto": "Recado",
-    "deId": 13,
-    "paraId": 15
+    "deId": 1,
+    "paraId": 2
 }
 ### update
 PATCH   {{baseURL}}/recados/20 HTTP/1.1
@@ -36,7 +36,7 @@ GET {{baseURL}}/pessoas/ HTTP/1.1
 Content-Type: application/json
 
 ### findOne
-GET {{baseURL}}/pessoas/11 HTTP/1.1
+GET {{baseURL}}/pessoas/2 HTTP/1.1
 Content-Type: application/json
 
 ### create
@@ -44,8 +44,8 @@ POST  {{baseURL}}/pessoas HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "email1@email.com",
-  "nome": "Maria Jose",
+  "email": "email@email.com",
+  "nome": "Joao Sousa",
   "password": "123456"
 }
 

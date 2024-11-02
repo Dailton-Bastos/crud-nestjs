@@ -9,14 +9,14 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'ep-quiet-wave-a5dlqzvv.us-east-2.aws.neon.tech',
+      host: '127.0.0.1',
       port: 5432,
-      username: 'uberdb_owner',
-      password: 'dGYN21BhCWLp',
-      database: 'uberdb',
+      username: 'postgres',
+      password: 'postgres',
+      database: '',
       autoLoadEntities: true, // Carrega entidades sem precisar especifica-las
       synchronize: true, // Sincroniza com o BD. Não usar em prod
-      ssl: true,
+      // ssl: true,
     }),
     RecadosModule,
     PessoasModule,

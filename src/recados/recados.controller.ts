@@ -44,7 +44,7 @@ export class RecadosController {
     @Query() paginationDto: PaginationDto,
     // @UrlParam() url: string,
   ): Promise<RecadoEntity[]> {
-    console.log(this.serverName);
+    // console.log(this.serverName);
     return this.recadosService.findAll(paginationDto);
   }
 
