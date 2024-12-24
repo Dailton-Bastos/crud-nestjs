@@ -14,13 +14,12 @@ import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { RegexProtocol } from 'src/common/regex/regex.protocol';
 import {
   ONLY_LOWERCASE_LETTERS_REGEX,
   REMOVE_SPACES_REGEX,
-  SERVER_NAME,
 } from './recados.constant';
-// import { UrlParam } from 'src/common/params/url-param.decorator';
+import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
+import { OnlyLowercaseLettersRegex } from 'src/common/regex/only-lowercase-letters.regex';
 
 /* 
   CRUD
@@ -40,12 +39,10 @@ import {
 export class RecadosController {
   constructor(
     private readonly recadosService: RecadosService,
-    @Inject(SERVER_NAME) // Token em provider
-    private readonly serverName: string,
     @Inject(REMOVE_SPACES_REGEX)
-    private readonly removeSpacesRegex: RegexProtocol,
+    private readonly removeSpaceRegex: RemoveSpacesRegex,
     @Inject(ONLY_LOWERCASE_LETTERS_REGEX)
-    private readonly onlyLowecaseLettersRegex: RegexProtocol,
+    private readonly onlyLowercaseLettersRegex: OnlyLowercaseLettersRegex,
   ) {}
   // Encontrar todos os recados
   @Get()
@@ -53,8 +50,10 @@ export class RecadosController {
     @Query() paginationDto: PaginationDto,
     // @UrlParam() url: string,
   ): Promise<RecadoEntity[]> {
-    console.log(this.removeSpacesRegex.execute(this.serverName));
-    console.log(this.onlyLowecaseLettersRegex.execute(this.serverName));
+    console.log(this.removeSpaceRegex.execute('REMOVE OS ESPACOS'));
+    console.log(
+      this.onlyLowercaseLettersRegex.execute('REMOVE OS ESPACOS letra'),
+    );
     return this.recadosService.findAll(paginationDto);
   }
 
