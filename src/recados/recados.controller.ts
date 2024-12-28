@@ -14,7 +14,6 @@ import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import type { MyDynamicModuleOptions } from 'src/my-dynamic/my-dynamic.module';
 
 /* 
   CRUD
@@ -32,13 +31,7 @@ import type { MyDynamicModuleOptions } from 'src/my-dynamic/my-dynamic.module';
 
 @Controller('recados')
 export class RecadosController {
-  constructor(
-    private readonly recadosService: RecadosService,
-    @Inject('MY_DYNAMIC_MODULE_OPTIONS')
-    private readonly myDynamicModuleOptions: MyDynamicModuleOptions,
-  ) {
-    console.log('RecadosController', this.myDynamicModuleOptions);
-  }
+  constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
   @Get()
   findAll(
