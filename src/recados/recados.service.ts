@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 // Scope.DEFAULT = O provider em questão é um singleton, ou seja, uma única instância é criada e compartilhada por todos os módulos que a importam
 // Scope.REQUEST = Uma nova instância é criada para cada requisição HTTP
@@ -13,14 +14,16 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class RecadosService {
-  private count = 0;
   constructor(
     @InjectRepository(RecadoEntity)
     private readonly recadoRepository: Repository<RecadoEntity>,
     private readonly pessoasService: PessoasService,
+    private readonly configService: ConfigService<{
+      DATABASE_TYPE: string;
+    }>,
   ) {
-    this.count++;
-    console.log('RecadosService criado', this.count);
+    const databaseType = this.configService.get<string>('DATABASE_TYPE');
+    console.log('DATABASE_TYPE:', databaseType);
   }
 
   throwNotFoundError() {

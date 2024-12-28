@@ -6,9 +6,11 @@ import { RecadoEntity } from './entities/recado.entity';
 import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { RecadosUtils } from './recados.utils';
 import { RegexFactory } from 'src/common/regex/regex.factory';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([RecadoEntity]),
     forwardRef(() => PessoasModule),
   ],
