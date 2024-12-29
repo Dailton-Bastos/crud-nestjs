@@ -44,18 +44,17 @@ POST  {{baseURL}}/pessoas HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "email@email.com",
+  "email": "jose@email.com",
   "nome": "Joao Sousa",
   "password": "123456"
 }
 
 ### update
-PATCH   {{baseURL}}/pessoas/11 HTTP/1.1
+PATCH   {{baseURL}}/pessoas/2 HTTP/1.1
 Content-Type: application/json
 
 {
-  "nome": "Maria Silva",
-  "password": "maria123"
+  "password": "123456"
 }
 
 ### delete

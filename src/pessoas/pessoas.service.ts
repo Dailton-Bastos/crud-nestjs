@@ -9,6 +9,7 @@ import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { PessoaEntity } from './entities/pessoa.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { HashingService } from 'src/auth/hashing/hashing.service';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class PessoasService {
@@ -17,6 +18,7 @@ export class PessoasService {
   constructor(
     @InjectRepository(PessoaEntity)
     private readonly pessoaRepository: Repository<PessoaEntity>,
+    private readonly hashingService: HashingService,
   ) {
     this.count++;
     console.log('PessoasService criado', this.count);
@@ -24,9 +26,13 @@ export class PessoasService {
 
   async create(createPessoaDto: CreatePessoaDto): Promise<PessoaEntity | void> {
     try {
+      const passwordHash = await this.hashingService.hash(
+        createPessoaDto.password,
+      );
+
       const dadosPessoa = {
         nome: createPessoaDto.nome,
-        passwordHash: createPessoaDto.password,
+        passwordHash,
         email: createPessoaDto.email,
       };
 
@@ -64,6 +70,14 @@ export class PessoasService {
     id: number,
     updatePessoaDto: UpdatePessoaDto,
   ): Promise<PessoaEntity> {
+    if (updatePessoaDto?.password) {
+      const passwordHash = await this.hashingService.hash(
+        updatePessoaDto.password,
+      );
+
+      updatePessoaDto.password = passwordHash;
+    }
+
     const partialUpdatePessoaDto = {
       passwordHash: updatePessoaDto.password,
       nome: updatePessoaDto.nome,
