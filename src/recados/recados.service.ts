@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { RecadoEntity } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
@@ -6,7 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import recadosConfig from './recados.config';
 
 // Scope.DEFAULT = O provider em questão é um singleton, ou seja, uma única instância é criada e compartilhada por todos os módulos que a importam
 // Scope.REQUEST = Uma nova instância é criada para cada requisição HTTP
@@ -18,12 +19,10 @@ export class RecadosService {
     @InjectRepository(RecadoEntity)
     private readonly recadoRepository: Repository<RecadoEntity>,
     private readonly pessoasService: PessoasService,
-    private readonly configService: ConfigService<{
-      DATABASE_TYPE: string;
-    }>,
+    @Inject(recadosConfig.KEY)
+    private readonly recadosConfigurations: ConfigType<typeof recadosConfig>,
   ) {
-    const databaseType = this.configService.get<string>('DATABASE_TYPE');
-    console.log('DATABASE_TYPE:', databaseType);
+    console.log(this.recadosConfigurations);
   }
 
   throwNotFoundError() {

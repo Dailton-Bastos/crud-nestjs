@@ -7,10 +7,11 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { RecadosUtils } from './recados.utils';
 import { RegexFactory } from 'src/common/regex/regex.factory';
 import { ConfigModule } from '@nestjs/config';
+import recadosConfig from './recados.config';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forFeature(recadosConfig),
     TypeOrmModule.forFeature([RecadoEntity]),
     forwardRef(() => PessoasModule),
   ],
