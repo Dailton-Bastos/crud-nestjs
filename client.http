@@ -1,9 +1,23 @@
 @baseURL = http://localhost:3000
 
-# @name RecadosController
+### Authenticate
+# @name authenticate
+POST  {{baseURL}}/auth HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "jose@email.com",
+  "password": "123456"
+}
+
+### Set Token
+@authToken = {{authenticate.response.body.acessToken}}
+
+
 ### findAll
+# @name RecadosController
 GET {{baseURL}}/recados HTTP/1.1
-Authorization: Bearer 123456
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 ### findOne
@@ -34,7 +48,7 @@ Content-Type: application/json
 ### findAll
 GET {{baseURL}}/pessoas/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoiam9zZUBlbWFpbC5jb20iLCJpYXQiOjE3MzYwOTY0ODEsImV4cCI6MTczNjEwMDA4MSwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwIn0.qtsokTkJRUlrT75a97MJFbXfXuXRP3F-dXwPWsQQeuM
+Authorization: Bearer {{authToken}}
 
 ### findOne
 GET {{baseURL}}/pessoas/2 HTTP/1.1
@@ -61,13 +75,3 @@ Content-Type: application/json
 ### delete
 DELETE {{baseURL}}/pessoas/1 HTTP/1.1
 Content-Type: application/json
-
-# @name AuthController
-### login
-POST  {{baseURL}}/auth HTTP/1.1
-Content-Type: application/json
-
-{
-  "email": "jose@email.com",
-  "password": "123456"
-}
