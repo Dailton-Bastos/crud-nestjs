@@ -65,8 +65,9 @@ Content-Type: application/json
 }
 
 ### update
-PATCH   {{baseURL}}/pessoas/2 HTTP/1.1
+PATCH   {{baseURL}}/pessoas/6 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
   "password": "123456"
@@ -74,4 +75,5 @@ Content-Type: application/json
 
 ### delete
 DELETE {{baseURL}}/pessoas/1 HTTP/1.1
+Authorization: Bearer {{authToken}}
 Content-Type: application/json

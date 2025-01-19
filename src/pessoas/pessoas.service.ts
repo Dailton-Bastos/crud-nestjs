@@ -10,6 +10,7 @@ import { PessoaEntity } from './entities/pessoa.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HashingService } from 'src/auth/hashing/hashing.service';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class PessoasService {
@@ -69,6 +70,7 @@ export class PessoasService {
   async update(
     id: number,
     updatePessoaDto: UpdatePessoaDto,
+    tokenPayload: TokenPayloadDto,
   ): Promise<PessoaEntity> {
     if (updatePessoaDto?.password) {
       const passwordHash = await this.hashingService.hash(
@@ -95,7 +97,7 @@ export class PessoasService {
     return this.pessoaRepository.save(pessoa);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, tokenPayload: TokenPayloadDto): Promise<void> {
     const pessoa = await this.pessoaRepository.findOneBy({ id });
 
     if (!pessoa) {
