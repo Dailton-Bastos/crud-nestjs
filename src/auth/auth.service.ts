@@ -42,16 +42,25 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
-    const acessToken = await this.signJwtAsync<Partial<PessoaEntity>>(
+    return this.createTokens(pessoa);
+  }
+
+  private async createTokens(pessoa: PessoaEntity) {
+    const acessTokenPromise = this.signJwtAsync<Partial<PessoaEntity>>(
       pessoa.id,
       this.jwtConfiguration.jwtTtl,
       { email: pessoa.email },
     );
 
-    const refreshToken = await this.signJwtAsync(
+    const refreshTokenPromise = this.signJwtAsync(
       pessoa.id,
       this.jwtConfiguration.jwtRefreshTtl,
     );
+
+    const [acessToken, refreshToken] = await Promise.all([
+      acessTokenPromise,
+      refreshTokenPromise,
+    ]);
 
     return {
       acessToken,
@@ -75,6 +84,21 @@ export class AuthService {
   }
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
-    return true;
+    try {
+      const { sub } = await this.jwtService.verifyAsync(
+        refreshTokenDto.refreshToken,
+        this.jwtConfiguration,
+      );
+
+      const pessoa = await this.pessoaRepository.findOneBy({ id: sub });
+
+      if (!pessoa) {
+        throw new Error('Pessoa não encontrada');
+      }
+
+      return this.createTokens(pessoa);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
   }
 }
