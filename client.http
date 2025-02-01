@@ -13,6 +13,18 @@ Content-Type: application/json
 ### Set Token
 @authToken = {{authenticate.response.body.acessToken}}
 
+### Set Refresh Token
+@refreshToken = {{authenticate.response.body.refreshToken}}
+
+### Re-Authenticate
+# @name reAuthenticate
+POST  {{baseURL}}/auth/refresh HTTP/1.1
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
 
 ### findAll
 # @name RecadosController

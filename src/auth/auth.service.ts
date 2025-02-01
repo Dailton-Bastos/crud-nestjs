@@ -7,6 +7,7 @@ import { HashingService } from './hashing/hashing.service';
 import jwtConfig from './config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
     private readonly pessoaRepository: Repository<PessoaEntity>,
     private readonly hashingService: HashingService,
     @Inject(jwtConfig.KEY)
-    private readonly jwtConfiguratin: ConfigType<typeof jwtConfig>,
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly jwtService: JwtService,
   ) {}
   async login(loginDto: LoginDto) {
@@ -41,21 +42,39 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
-    const acessToken = await this.jwtService.signAsync(
-      {
-        sub: pessoa.id,
-        email: pessoa.email,
-      },
-      {
-        secret: this.jwtConfiguratin.secret,
-        audience: this.jwtConfiguratin.audience,
-        issuer: this.jwtConfiguratin.issuer,
-        expiresIn: this.jwtConfiguratin.jwtTtl,
-      },
+    const acessToken = await this.signJwtAsync<Partial<PessoaEntity>>(
+      pessoa.id,
+      this.jwtConfiguration.jwtTtl,
+      { email: pessoa.email },
+    );
+
+    const refreshToken = await this.signJwtAsync(
+      pessoa.id,
+      this.jwtConfiguration.jwtRefreshTtl,
     );
 
     return {
       acessToken,
+      refreshToken,
     };
+  }
+
+  private async signJwtAsync<T>(sub: number, expiresIn: number, payload?: T) {
+    return await this.jwtService.signAsync(
+      {
+        sub,
+        ...payload,
+      },
+      {
+        secret: this.jwtConfiguration.secret,
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+        expiresIn,
+      },
+    );
+  }
+
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    return true;
   }
 }
