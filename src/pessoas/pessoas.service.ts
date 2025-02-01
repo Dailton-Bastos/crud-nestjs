@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   Scope,
@@ -94,6 +95,10 @@ export class PessoasService {
       throw new NotFoundException('Pessoa não encontrada');
     }
 
+    if (pessoa.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Você não é essa pessoa');
+    }
+
     return this.pessoaRepository.save(pessoa);
   }
 
@@ -102,6 +107,10 @@ export class PessoasService {
 
     if (!pessoa) {
       throw new NotFoundException('Pessoa não encontrada');
+    }
+
+    if (pessoa.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Você não é essa pessoa');
     }
 
     await this.pessoaRepository.remove(pessoa);
