@@ -38,4 +38,7 @@ export class PessoaEntity {
 
   @UpdateDateColumn()
   updateAt?: Date;
+
+  @Column({ default: true })
+  active: boolean;
 }
