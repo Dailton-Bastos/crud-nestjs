@@ -6,7 +6,7 @@ POST  {{baseURL}}/auth HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "jose@email.com",
+  "email": "ana1@email.com",
   "password": "123456"
 }
 
@@ -72,9 +72,10 @@ POST  {{baseURL}}/pessoas HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ana@email.com",
+  "email": "ana1@email.com",
   "nome": "Ana Sousa",
-  "password": "123456"
+  "password": "123456",
+  "routePolicies": ["createRecado", "findOneRecado"]
 }
 
 ### update
