@@ -3,12 +3,10 @@ import {
   Controller,
   Delete,
   Get,
-  Inject,
   Param,
   Patch,
   Post,
   Query,
-  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
@@ -19,10 +17,11 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthTokenGuard } from 'src/auth/auth.token.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
-import { RoutePolicyGuard } from 'src/auth/route-policy.guard';
-import { ROUTE_POLICY_KEY } from 'src/auth/auth.constants';
+// import { RoutePolicyGuard } from 'src/auth/route-policy.guard';
+// import { ROUTE_POLICY_KEY } from 'src/auth/auth.constants';
 import { SetRoutePolicy } from 'src/auth/decorators/set-route-policy.decorator';
 import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
+import { AuthAndPolicyGuard } from 'src/auth/auth-policy.guard';
 
 /* 
   CRUD
@@ -38,13 +37,12 @@ import { RoutePolicies } from 'src/auth/enum/route-policies.enum';
 
 // DTO - Data Transfer Object -> Objeto de transferência de dados
 
-@UseGuards(RoutePolicyGuard)
 @Controller('recados')
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   // Encontrar todos os recados
   @Get()
-  @SetRoutePolicy(RoutePolicies.findAllRecados)
+  // @SetRoutePolicy(RoutePolicies.findAllRecados)
   findAll(
     @Query() paginationDto: PaginationDto,
     // @UrlParam() url: string,
@@ -58,7 +56,8 @@ export class RecadosController {
     return this.recadosService.findOne(id);
   }
 
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthAndPolicyGuard)
+  @SetRoutePolicy(RoutePolicies.createRecado)
   @Post()
   create(
     @Body() createRecadoDto: CreateRecadoDto,
@@ -67,7 +66,8 @@ export class RecadosController {
     return this.recadosService.create(createRecadoDto, tokenPayload);
   }
 
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthAndPolicyGuard)
+  @SetRoutePolicy(RoutePolicies.updatePessoa)
   @Patch(':id')
   update(
     @Param('id') id: number,
@@ -77,7 +77,8 @@ export class RecadosController {
     return this.recadosService.update(id, updateRecadoDto, tokenPayload);
   }
 
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthAndPolicyGuard)
+  @SetRoutePolicy(RoutePolicies.deleteRecado)
   @Delete(':id')
   remove(
     @Param('id') id: number,

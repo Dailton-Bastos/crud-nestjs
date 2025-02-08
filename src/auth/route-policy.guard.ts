@@ -1,7 +1,14 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROUTE_POLICY_KEY } from './auth.constants';
+import { REQUEST_TOKEN_PAYLOAD_KEY, ROUTE_POLICY_KEY } from './auth.constants';
 import { RoutePolicies } from './enum/route-policies.enum';
+import { Request } from 'express';
+import { PessoaEntity } from 'src/pessoas/entities/pessoa.entity';
 
 @Injectable()
 export class RoutePolicyGuard implements CanActivate {
@@ -12,6 +19,30 @@ export class RoutePolicyGuard implements CanActivate {
       ROUTE_POLICY_KEY,
       context.getHandler(),
     );
+
+    // Não precisamos de permissões para essa rota, visto que nenhuma foi configurada
+    if (!routePolicyRequired) return true;
+
+    // Precisamos do tokenPayload vindo de AuthTokenGuard para continuar
+    const request = context.switchToHttp().getRequest<Request>();
+
+    const tokenPayload = request[REQUEST_TOKEN_PAYLOAD_KEY];
+
+    if (!tokenPayload) {
+      throw new UnauthorizedException(
+        `Rota requer permissão ${routePolicyRequired}. Usuário não logado`,
+      );
+    }
+
+    const { pessoa }: { pessoa: PessoaEntity } = tokenPayload;
+
+    console.log(pessoa);
+
+    if (!pessoa.routePolicies.includes(routePolicyRequired)) {
+      throw new UnauthorizedException(
+        `Usuário não tem permissão ${routePolicyRequired}.`,
+      );
+    }
 
     return true;
   }
