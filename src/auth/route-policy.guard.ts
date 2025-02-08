@@ -8,7 +8,6 @@ import { Reflector } from '@nestjs/core';
 import { REQUEST_TOKEN_PAYLOAD_KEY, ROUTE_POLICY_KEY } from './auth.constants';
 import { RoutePolicies } from './enum/route-policies.enum';
 import { Request } from 'express';
-import { PessoaEntity } from 'src/pessoas/entities/pessoa.entity';
 
 @Injectable()
 export class RoutePolicyGuard implements CanActivate {
@@ -34,15 +33,13 @@ export class RoutePolicyGuard implements CanActivate {
       );
     }
 
-    const { pessoa }: { pessoa: PessoaEntity } = tokenPayload;
+    // const { pessoa }: { pessoa: PessoaEntity } = tokenPayload;
 
-    console.log(pessoa);
-
-    if (!pessoa.routePolicies.includes(routePolicyRequired)) {
-      throw new UnauthorizedException(
-        `Usuário não tem permissão ${routePolicyRequired}.`,
-      );
-    }
+    // if (!pessoa.routePolicies.includes(routePolicyRequired)) {
+    //   throw new UnauthorizedException(
+    //     `Usuário não tem permissão ${routePolicyRequired}.`,
+    //   );
+    // }
 
     return true;
   }
