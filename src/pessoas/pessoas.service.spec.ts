@@ -1,18 +1,47 @@
+import { HashingService } from 'src/auth/hashing/hashing.service';
+import { PessoaEntity } from './entities/pessoa.entity';
+import { PessoasService } from './pessoas.service';
+import { Repository } from 'typeorm';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+
 describe('PessoasService', () => {
-  beforeEach(() => {
+  let pessoasService: PessoasService;
+  let pessoaRepository: Repository<PessoaEntity>;
+  let hashingService: HashingService;
+
+  beforeEach(async () => {
     // Isso será executado antes de cada teste
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PessoasService,
+        {
+          provide: getRepositoryToken(PessoaEntity),
+          useValue: {},
+        },
+        {
+          provide: HashingService,
+          useValue: {},
+        },
+      ],
+    }).compile();
+
+    pessoasService = module.get<PessoasService>(PessoasService);
+    pessoaRepository = module.get<Repository<PessoaEntity>>(
+      getRepositoryToken(PessoaEntity),
+    );
+    hashingService = module.get<HashingService>(HashingService);
   });
 
-  // Caso - Teste
-  it('deve somar o numero1 e o numero2 e retornar o resultado 3', () => {
-    // Configurar = Arrange
-    const numero1 = 1;
-    const numero2 = 2;
+  it('PessoasService deve estar definido', () => {
+    expect(pessoasService).toBeDefined();
+  });
 
-    // Fazer alguma ação = Act
-    const result = numero1 + numero2;
+  it('pessoaRepository deve estar definido', () => {
+    expect(pessoaRepository).toBeDefined();
+  });
 
-    // Conferir se essa ação foi a esperada = Assert
-    expect(result).toBe(3);
+  it('hashingService deve estar definido', () => {
+    expect(hashingService).toBeDefined();
   });
 });

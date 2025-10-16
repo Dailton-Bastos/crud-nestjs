@@ -16,7 +16,7 @@ import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { resolve, extname } from 'node:path';
 import { writeFile } from 'node:fs/promises';
 
-@Injectable({ scope: Scope.TRANSIENT })
+@Injectable({ scope: Scope.DEFAULT })
 export class PessoasService {
   private count = 0;
 
