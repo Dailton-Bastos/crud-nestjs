@@ -4,6 +4,7 @@ import { PessoasService } from './pessoas.service';
 import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { CreatePessoaDto } from './dto/create-pessoa.dto';
 
 describe('PessoasService', () => {
   let pessoasService: PessoasService;
@@ -17,11 +18,17 @@ describe('PessoasService', () => {
         PessoasService,
         {
           provide: getRepositoryToken(PessoaEntity),
-          useValue: {},
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+          },
         },
         {
           provide: HashingService,
-          useValue: {},
+          useValue: {
+            hash: jest.fn(),
+            compare: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -44,4 +51,35 @@ describe('PessoasService', () => {
   it('hashingService deve estar definido', () => {
     expect(hashingService).toBeDefined();
   });
+
+  describe('create', () => {
+    it('deve criar uma pessoa', async () => {
+      // Arrange
+      // CreatePessoaDto
+      const createPessoaDto: CreatePessoaDto = {
+        email: 'teste@teste.com',
+        nome: 'Teste',
+        password: '123456',
+      };
+
+      const passwordHash = 'hash-teste';
+
+      jest.spyOn(hashingService, 'hash').mockResolvedValue(passwordHash);
+
+      // Act
+      await pessoasService.create(createPessoaDto);
+
+      // Assert
+      expect(hashingService.hash).toHaveBeenCalledWith(
+        createPessoaDto.password,
+      );
+
+      expect(pessoaRepository.create).toHaveBeenCalledWith({
+        nome: createPessoaDto.nome,
+        passwordHash: passwordHash,
+        email: createPessoaDto.email,
+      });
+    });
+  });
 });
+``;

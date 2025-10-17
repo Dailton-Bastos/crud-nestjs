@@ -35,6 +35,8 @@ export class PessoasService {
         createPessoaDto.password,
       );
 
+      console.log('passwordHash', passwordHash);
+
       const dadosPessoa = {
         nome: createPessoaDto.nome,
         passwordHash,
