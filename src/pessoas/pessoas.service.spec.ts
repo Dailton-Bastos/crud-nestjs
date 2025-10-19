@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
+import { ConflictException } from '@nestjs/common';
 
 describe('PessoasService', () => {
   let pessoasService: PessoasService;
@@ -101,6 +102,19 @@ describe('PessoasService', () => {
       // pessoa criada?
       expect(result).toEqual(novaPessoa);
     });
+
+    it('deve lançar ConflictException se o e-mail já estiver cadastrado', async () => {
+      jest.spyOn(pessoaRepository, 'save').mockRejectedValue({ code: '23505' });
+
+      const createPessoaDto: CreatePessoaDto = {
+        email: 'teste@teste.com',
+        nome: 'Teste',
+        password: '123456',
+      };
+
+      await expect(pessoasService.create(createPessoaDto)).rejects.toThrow(
+        ConflictException,
+      );
+    });
   });
 });
-``;
