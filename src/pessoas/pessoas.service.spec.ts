@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('PessoasService', () => {
   let pessoasService: PessoasService;
@@ -21,6 +21,7 @@ describe('PessoasService', () => {
           provide: getRepositoryToken(PessoaEntity),
           useValue: {
             create: jest.fn(),
+            findOne: jest.fn(),
             save: jest.fn(),
           },
         },
@@ -125,6 +126,39 @@ describe('PessoasService', () => {
       await expect(
         pessoasService.create({} as CreatePessoaDto),
       ).rejects.toThrow(new Error('Erro desconhecido'));
+    });
+  });
+
+  describe('findOne', () => {
+    it('deve retornar uma pessoa se encontrada', async () => {
+      const id = 1;
+      const pessoa = {
+        id,
+        nome: 'Teste',
+        email: 'teste@teste.com',
+        passwordHash: 'hash-teste',
+      };
+
+      jest
+        .spyOn(pessoaRepository, 'findOne')
+        .mockResolvedValue(pessoa as PessoaEntity);
+
+      const result = await pessoasService.findOne(id);
+
+      expect(pessoaRepository.findOne).toHaveBeenCalledWith({ where: { id } });
+      expect(result).toEqual(pessoa);
+    });
+
+    it('deve lançar NotFoundException se a pessoa não for encontrada', async () => {
+      const id = 1;
+      // Arrange
+      // Como a pessoaRepository.findOne retorna null, vamos simular este valor.
+      jest.spyOn(pessoaRepository, 'findOne').mockResolvedValue(null);
+
+      // Act
+      await expect(pessoasService.findOne(id)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
