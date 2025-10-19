@@ -63,22 +63,43 @@ describe('PessoasService', () => {
       };
 
       const passwordHash = 'hash-teste';
+      const novaPessoa = {
+        id: 1,
+        nome: createPessoaDto.nome,
+        passwordHash,
+        email: createPessoaDto.email,
+      };
 
+      // Como a pessoa retornada por pessoaRepository.create é necessária em
+      // pessoaRepository.save. Vamos simular este valor.
       jest.spyOn(hashingService, 'hash').mockResolvedValue(passwordHash);
+      jest
+        .spyOn(pessoaRepository, 'create')
+        .mockReturnValue(novaPessoa as PessoaEntity);
 
       // Act
-      await pessoasService.create(createPessoaDto);
+      const result = await pessoasService.create(createPessoaDto);
 
       // Assert
+      // O método hashingService.hash foi chamado com createPessoaDto.password?
       expect(hashingService.hash).toHaveBeenCalledWith(
         createPessoaDto.password,
       );
 
+      // O método pessoaRepository.create foi chamado com os dados da nova
+      // pessoa com o hash de senha gerado por hashingService.hash?
       expect(pessoaRepository.create).toHaveBeenCalledWith({
         nome: createPessoaDto.nome,
-        passwordHash: passwordHash,
+        passwordHash,
         email: createPessoaDto.email,
       });
+      // O método pessoaRepository.save foi chamado com os dados da nova
+      // pessoa gerada por pessoaRepository.create?
+      expect(pessoaRepository.save).toHaveBeenCalledWith(novaPessoa);
+
+      // O resultado do método pessoaService.create retornou a nova
+      // pessoa criada?
+      expect(result).toEqual(novaPessoa);
     });
   });
 });
