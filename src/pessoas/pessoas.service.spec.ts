@@ -116,5 +116,15 @@ describe('PessoasService', () => {
         ConflictException,
       );
     });
+
+    it('deve lançar Error se ocorrer um erro desconhecido', async () => {
+      jest
+        .spyOn(pessoaRepository, 'save')
+        .mockRejectedValue(new Error('Erro desconhecido'));
+
+      await expect(
+        pessoasService.create({} as CreatePessoaDto),
+      ).rejects.toThrow(new Error('Erro desconhecido'));
+    });
   });
 });
