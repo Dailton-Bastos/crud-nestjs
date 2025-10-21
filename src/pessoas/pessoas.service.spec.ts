@@ -6,6 +6,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { UpdatePessoaDto } from './dto/update-pessoa.dto';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 describe('PessoasService', () => {
   let pessoasService: PessoasService;
@@ -24,6 +26,7 @@ describe('PessoasService', () => {
             findOne: jest.fn(),
             save: jest.fn(),
             find: jest.fn(),
+            preload: jest.fn(),
           },
         },
         {
@@ -185,6 +188,65 @@ describe('PessoasService', () => {
       });
       // O resultado do método pessoaService.findAll retornou todas as pessoas?
       expect(result).toEqual(pessoas);
+    });
+  });
+
+  describe('update', () => {
+    it('deve atualizar uma pessoa se for autorizada', async () => {
+      // Arrange
+      const id = 1;
+      const updatePessoaDto: UpdatePessoaDto = {
+        nome: 'Teste',
+        password: '123456',
+      };
+      const passwordHash = 'hash-teste';
+      const pessoaAtualizada = {
+        id,
+        nome: updatePessoaDto.nome,
+        passwordHash,
+      } as PessoaEntity;
+
+      const tokenPayload: TokenPayloadDto = {
+        sub: id,
+        email: updatePessoaDto.email,
+        iat: 1,
+        exp: 1,
+        aud: 'teste',
+        iss: 'teste',
+      };
+
+      jest
+        .spyOn(hashingService, 'hash')
+        .mockResolvedValue(updatePessoaDto.password);
+
+      jest
+        .spyOn(pessoaRepository, 'preload')
+        .mockResolvedValue(pessoaAtualizada);
+
+      jest.spyOn(pessoaRepository, 'save').mockResolvedValue(pessoaAtualizada);
+
+      // Act
+      const result = await pessoasService.update(
+        id,
+        updatePessoaDto,
+        tokenPayload,
+      );
+
+      // Assert
+      // O método hashingService.hash foi chamado com updatePessoaDto.password?
+      expect(hashingService.hash).toHaveBeenCalledWith(
+        updatePessoaDto.password,
+      );
+      // O método pessoaRepository.preload foi chamado com os dados da pessoa?
+      expect(pessoaRepository.preload).toHaveBeenCalledWith({
+        id,
+        nome: updatePessoaDto.nome,
+        passwordHash: updatePessoaDto.password,
+      });
+      // O método pessoaRepository.save foi chamado com os dados da pessoa?
+      expect(pessoaRepository.save).toHaveBeenCalledWith(pessoaAtualizada);
+      // O resultado do método pessoaService.update retornou a pessoa atualizada?
+      expect(result).toEqual(pessoaAtualizada);
     });
   });
 });

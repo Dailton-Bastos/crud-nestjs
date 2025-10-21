@@ -78,18 +78,17 @@ export class PessoasService {
     updatePessoaDto: UpdatePessoaDto,
     tokenPayload: TokenPayloadDto,
   ): Promise<PessoaEntity> {
+    const partialUpdatePessoaDto: Partial<PessoaEntity> = {
+      nome: updatePessoaDto.nome,
+    };
+
     if (updatePessoaDto?.password) {
       const passwordHash = await this.hashingService.hash(
         updatePessoaDto.password,
       );
 
-      updatePessoaDto.password = passwordHash;
+      partialUpdatePessoaDto['passwordHash'] = passwordHash;
     }
-
-    const partialUpdatePessoaDto = {
-      passwordHash: updatePessoaDto.password,
-      nome: updatePessoaDto.nome,
-    };
 
     const pessoa = await this.pessoaRepository.preload({
       id,
