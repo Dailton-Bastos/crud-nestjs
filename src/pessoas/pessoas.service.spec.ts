@@ -5,7 +5,11 @@ import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
@@ -247,6 +251,58 @@ describe('PessoasService', () => {
       expect(pessoaRepository.save).toHaveBeenCalledWith(pessoaAtualizada);
       // O resultado do método pessoaService.update retornou a pessoa atualizada?
       expect(result).toEqual(pessoaAtualizada);
+    });
+
+    it('deve lançar ForbiddenException se a pessoa não for autorizada', async () => {
+      // Arrange
+      const id = 1;
+      const updatePessoaDto: UpdatePessoaDto = {
+        nome: 'Teste',
+      };
+      const tokenPayload: TokenPayloadDto = {
+        sub: 2,
+        email: 'teste@teste.com',
+        iat: 1,
+        exp: 1,
+        aud: 'teste',
+        iss: 'teste',
+      };
+      const pessoa = {
+        id,
+        nome: updatePessoaDto.nome,
+        email: 'teste@teste.com',
+        passwordHash: 'hash-teste',
+      } as PessoaEntity;
+
+      jest.spyOn(pessoaRepository, 'preload').mockResolvedValue(pessoa);
+
+      // Act
+      await expect(
+        pessoasService.update(id, updatePessoaDto, tokenPayload),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('deve lançar NotFoundException se a pessoa não for encontrada', async () => {
+      // Arrange
+      const id = 1;
+      const updatePessoaDto: UpdatePessoaDto = {
+        nome: 'Teste',
+      };
+      const tokenPayload: TokenPayloadDto = {
+        sub: id,
+        email: 'teste@teste.com',
+        iat: 1,
+        exp: 1,
+        aud: 'teste',
+        iss: 'teste',
+      };
+
+      jest.spyOn(pessoaRepository, 'preload').mockResolvedValue(null);
+
+      // Act
+      await expect(
+        pessoasService.update(id, updatePessoaDto, tokenPayload),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });
