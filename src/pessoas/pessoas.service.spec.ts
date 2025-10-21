@@ -23,6 +23,7 @@ describe('PessoasService', () => {
             create: jest.fn(),
             findOne: jest.fn(),
             save: jest.fn(),
+            find: jest.fn(),
           },
         },
         {
@@ -159,6 +160,31 @@ describe('PessoasService', () => {
       await expect(pessoasService.findOne(id)).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('findAll', () => {
+    it('deve retornar todas as pessoas', async () => {
+      const pessoas: PessoaEntity[] = [
+        {
+          id: 1,
+          nome: 'Teste',
+          email: 'teste@teste.com',
+          passwordHash: 'hash-teste',
+        } as PessoaEntity,
+      ];
+
+      // Arrange
+      jest.spyOn(pessoaRepository, 'find').mockResolvedValue(pessoas);
+      // Act
+      const result = await pessoasService.findAll();
+      // Assert
+      // O método pessoaRepository.find foi chamado?
+      expect(pessoaRepository.find).toHaveBeenCalledWith({
+        order: { id: 'DESC' },
+      });
+      // O resultado do método pessoaService.findAll retornou todas as pessoas?
+      expect(result).toEqual(pessoas);
     });
   });
 });
