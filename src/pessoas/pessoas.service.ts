@@ -106,18 +106,17 @@ export class PessoasService {
     return this.pessoaRepository.save(pessoa);
   }
 
-  async remove(id: number, tokenPayload: TokenPayloadDto): Promise<void> {
-    const pessoa = await this.pessoaRepository.findOneBy({ id });
-
-    if (!pessoa) {
-      throw new NotFoundException('Pessoa não encontrada');
-    }
+  async remove(
+    id: number,
+    tokenPayload: TokenPayloadDto,
+  ): Promise<PessoaEntity> {
+    const pessoa = await this.findOne(id);
 
     if (pessoa.id !== tokenPayload.sub) {
       throw new ForbiddenException('Você não é essa pessoa');
     }
 
-    await this.pessoaRepository.remove(pessoa);
+    return this.pessoaRepository.remove(pessoa);
   }
 
   async uploadPicture(
