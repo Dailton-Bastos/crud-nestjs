@@ -57,7 +57,7 @@ export class PessoasService {
     }
   }
 
-  findAll(): Promise<PessoaEntity[] | void> {
+  async findAll(): Promise<PessoaEntity[]> {
     return this.pessoaRepository.find({
       order: { id: 'DESC' },
     });

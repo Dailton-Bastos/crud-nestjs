@@ -6,12 +6,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { resolve } from 'node:path';
+import { writeFile } from 'node:fs/promises';
+
+jest.mock('node:fs/promises', () => ({
+  writeFile: jest.fn(),
+}));
 
 describe('PessoasService', () => {
   let pessoasService: PessoasService;
@@ -394,6 +401,102 @@ describe('PessoasService', () => {
       await expect(pessoasService.remove(id, tokenPayload)).rejects.toThrow(
         ForbiddenException,
       );
+    });
+  });
+
+  describe('uploadPicture', () => {
+    it('deve salvar a imagem corretamente e atualizar a pessoa', async () => {
+      // Arrange
+      const file = {
+        originalname: 'teste.jpg',
+        buffer: Buffer.from('file content'),
+        size: 2000,
+      } as Express.Multer.File;
+
+      const tokenPayload: TokenPayloadDto = {
+        sub: 12,
+        email: 'teste@teste.com',
+        iat: 1,
+        exp: 1,
+        aud: 'teste',
+        iss: 'teste',
+      };
+      const pessoa = {
+        id: 1,
+        nome: 'Teste',
+        email: 'teste@teste.com',
+        passwordHash: 'hash-teste',
+        picture: null,
+      } as PessoaEntity;
+
+      jest.spyOn(pessoasService, 'findOne').mockResolvedValue(pessoa);
+      jest.spyOn(pessoaRepository, 'save').mockResolvedValue(pessoa);
+
+      const fileFullPath = resolve(process.cwd(), 'pictures', '12.jpg');
+
+      // Act
+      const result = await pessoasService.uploadPicture(file, tokenPayload);
+
+      // Assert
+      expect(pessoasService.findOne).toHaveBeenCalledWith(tokenPayload.sub);
+      expect(writeFile).toHaveBeenCalledWith(fileFullPath, file.buffer);
+      expect(pessoaRepository.save).toHaveBeenCalledWith({
+        ...pessoa,
+        picture: '12.jpg',
+      });
+      expect(result).toEqual({
+        ...pessoa,
+        picture: '12.jpg',
+      });
+    });
+
+    it('deve lançar BadRequestException se o arquivo for muito pequeno', async () => {
+      // Arrange
+      const file = {
+        originalname: 'teste.jpg',
+        buffer: Buffer.from('file content'),
+        size: 1023,
+      } as Express.Multer.File;
+
+      const tokenPayload: TokenPayloadDto = {
+        sub: 1,
+        email: 'teste@teste.com',
+        iat: 1,
+        exp: 1,
+        aud: 'teste',
+        iss: 'teste',
+      };
+
+      await expect(
+        pessoasService.uploadPicture(file, tokenPayload),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('deve lançar NotFoundException se a pessoa não for encontrada', async () => {
+      // Arrange
+      const file = {
+        originalname: 'teste.jpg',
+        buffer: Buffer.from('file content'),
+        size: 2000,
+      } as Express.Multer.File;
+
+      const tokenPayload: TokenPayloadDto = {
+        sub: 1,
+        email: 'teste@teste.com',
+        iat: 1,
+        exp: 1,
+        aud: 'teste',
+        iss: 'teste',
+      };
+
+      jest
+        .spyOn(pessoasService, 'findOne')
+        .mockRejectedValue(new NotFoundException());
+
+      // Act
+      await expect(
+        pessoasService.uploadPicture(file, tokenPayload),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });
