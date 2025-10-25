@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
+  // Req,
   UseInterceptors,
   UploadedFile,
   ParseFilePipeBuilder,
@@ -17,8 +17,8 @@ import { PessoasService } from './pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { AuthTokenGuard } from 'src/auth/auth.token.guard';
-import { Request } from 'express';
-import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
+// import { Request } from 'express';
+// import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -34,8 +34,7 @@ export class PessoasController {
 
   @UseGuards(AuthTokenGuard)
   @Get()
-  findAll(@Req() req: Request) {
-    console.log(req[REQUEST_TOKEN_PAYLOAD_KEY]);
+  findAll() {
     return this.pessoasService.findAll();
   }
 
