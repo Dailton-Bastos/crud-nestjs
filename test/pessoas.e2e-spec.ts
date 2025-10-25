@@ -79,5 +79,70 @@ describe('PessoasController (e2e)', () => {
         picture: '',
       });
     });
+
+    it('deve falhar se o email já estiver cadastrado', async () => {
+      const dto = {
+        email: 'teste@teste.com',
+        nome: 'Teste',
+        password: '123456',
+      };
+
+      await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(dto)
+        .expect(HttpStatus.CREATED);
+
+      const response = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(dto);
+
+      expect(response.status).toBe(HttpStatus.CONFLICT);
+
+      expect(response.body).toEqual({
+        error: 'Conflict',
+        statusCode: HttpStatus.CONFLICT,
+        message: 'E-mail já está cadastrado',
+      });
+    });
+
+    it('deve gerar um erro de senha curta', async () => {
+      const dto = {
+        email: 'teste@teste.com',
+        nome: 'Teste',
+        password: '123',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(dto);
+
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+      expect(response.body).toEqual({
+        error: 'Bad Request',
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: ['password must be longer than or equal to 5 characters'],
+      });
+      // Ou
+      expect(response.body.message).toContain(
+        'password must be longer than or equal to 5 characters',
+      );
+    });
+
+    it('deve gerar um erro de nome vazio', async () => {
+      const dto = {
+        email: 'teste@teste.com',
+        nome: '',
+        password: '123456',
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(dto);
+
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+      expect(response.body.message).toContain('nome should not be empty');
+    });
   });
 });
