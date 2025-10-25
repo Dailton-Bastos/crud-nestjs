@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import globalConfig from 'src/global-config/global.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,7 +10,7 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { GlobalConfigModule } from 'src/global-config/global-config.module';
 import { AuthModule } from 'src/auth/auth.module';
 import appConfig from 'src/app/config/app.config';
-// import * as request from 'supertest';
+import * as request from 'supertest';
 
 describe('PessoasController (e2e)', () => {
   let app: INestApplication;
@@ -52,5 +52,32 @@ describe('PessoasController (e2e)', () => {
     await app.close();
   });
 
-  it('/ (GET)', () => {});
+  describe('POST /pessoas', () => {
+    it('deve criar uma pessoa com sucesso', async () => {
+      // Arrange
+      const dto = {
+        email: 'teste@teste.com',
+        nome: 'Teste',
+        password: '123456',
+      };
+
+      // Act
+      const response = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send(dto);
+
+      // Assert
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body).toEqual({
+        id: expect.any(Number),
+        email: dto.email,
+        nome: dto.nome,
+        passwordHash: expect.any(String),
+        createdAt: expect.any(String),
+        updateAt: expect.any(String),
+        active: true,
+        picture: '',
+      });
+    });
+  });
 });
