@@ -9,6 +9,7 @@ import {
 export class CreatePessoaDto {
   @IsString()
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @IsString()
