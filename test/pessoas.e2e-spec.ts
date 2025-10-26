@@ -12,6 +12,26 @@ import { AuthModule } from 'src/auth/auth.module';
 import appConfig from 'src/app/config/app.config';
 import * as request from 'supertest';
 
+const login = async (
+  app: INestApplication,
+  dto: { email: string; password: string },
+) => {
+  const response = await request(app.getHttpServer()).post('/auth').send(dto);
+
+  return response.body.acessToken;
+};
+
+// const createPessoaAndLogin = async (
+//   app: INestApplication,
+//   dto: { email: string; nome: string; password: string },
+// ) => {
+//   await request(app.getHttpServer())
+//     .post('/pessoas')
+//     .send(dto)
+//     .expect(HttpStatus.CREATED);
+//   return login(app, { email: dto.email, password: dto.password });
+// };
+
 describe('PessoasController (e2e)', () => {
   let app: INestApplication;
 
@@ -143,6 +163,70 @@ describe('PessoasController (e2e)', () => {
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
 
       expect(response.body.message).toContain('nome should not be empty');
+    });
+  });
+
+  describe('GET /pessoas/:id', () => {
+    it('deve retornar UNAUTHORIZED se não estiver autenticado', async () => {
+      const pessoaResponse = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send({
+          email: 'teste@teste.com',
+          nome: 'Teste',
+          password: '123456',
+        });
+
+      expect(pessoaResponse.status).toBe(HttpStatus.CREATED);
+
+      const response = await request(app.getHttpServer()).get(
+        `/pessoas/${pessoaResponse.body.id}`,
+      );
+
+      expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
+
+      expect(response.body).toEqual({
+        error: 'Unauthorized',
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: 'Token não encontrado',
+      });
+    });
+
+    it('deve retornar pessoa com sucesso se estiver autenticado', async () => {
+      // Arrange
+      const dto = {
+        email: 'teste@teste.com',
+        nome: 'Teste',
+        password: '123456',
+      };
+
+      const pessoaResponse = await request(app.getHttpServer())
+        .post('/pessoas')
+        .send({ ...dto })
+        .expect(HttpStatus.CREATED);
+
+      const acessToken = await login(app, {
+        email: dto.email,
+        password: dto.password,
+      });
+
+      const response = await request(app.getHttpServer())
+        .get(`/pessoas/${pessoaResponse.body.id}`)
+        .set('Authorization', `Bearer ${acessToken}`);
+
+      expect(response.status).toBe(HttpStatus.OK);
+
+      // expect(response.body).toEqual({
+      //   id: pessoaResponse.body.id,
+      //   email: pessoaResponse.body.email,
+      //   nome: pessoaResponse.body.nome,
+      //   passwordHash: expect.any(String),
+      //   createdAt: expect.any(String),
+      //   updateAt: expect.any(String),
+      //   active: true,
+      //   picture: '',
+      // });
+
+      expect(response.body).toEqual(pessoaResponse.body);
     });
   });
 });
